@@ -198,5 +198,7 @@ Todo código deve:
 
 ---
 
+Utilizar sempre o pnpm e zsh como terminal.
+
 **Este documento é a referência oficial de desenvolvimento do projeto.**
 Qualquer exceção deve ser rara, consciente e bem documentada.

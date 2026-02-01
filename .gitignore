@@ -3,6 +3,8 @@ node_modules
 .nvm
 .cache
 .corepack
+.tmp
+/.expo
 
 dist
 build

@@ -1,0 +1,177 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid()) @db.Uuid
+  username  String
+  email     String   @unique
+  avatarUrl String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  cars          Car[]
+  crews         CrewMember[]
+  routes        Route[]
+  photoSpots    PhotoSpot[]
+  driveSessions DriveSession[]
+  createdCrews  Crew[]
+  mapPoints     MapPoint[]
+}
+
+model Location {
+  id          String   @id @default(uuid()) @db.Uuid
+  lat         Float
+  lng         Float
+  title       String?
+  description String?
+  createdAt   DateTime @default(now())
+
+  photoSpots       PhotoSpot[]
+  mapPoints        MapPoint[]
+  routeStarts      Route[]        @relation("RouteStartLocation")
+  routeEnds        Route[]        @relation("RouteEndLocation")
+  driveSessionFrom DriveSession[] @relation("DriveSessionStartLocation")
+  driveSessionTo   DriveSession[] @relation("DriveSessionEndLocation")
+}
+
+model DriveSession {
+  id              String    @id @default(uuid()) @db.Uuid
+  userId          String    @db.Uuid
+  startedAt       DateTime  @default(now())
+  endedAt         DateTime?
+  startLocationId String?   @db.Uuid
+  endLocationId   String?   @db.Uuid
+
+  user          User      @relation(fields: [userId], references: [id])
+  startLocation Location? @relation("DriveSessionStartLocation", fields: [startLocationId], references: [id])
+  endLocation   Location? @relation("DriveSessionEndLocation", fields: [endLocationId], references: [id])
+}
+
+model PhotoSpot {
+  id           String   @id @default(uuid()) @db.Uuid
+  createdById  String   @db.Uuid
+  locationId   String   @db.Uuid
+  coverImageUrl String
+  description  String?
+  isApproved   Boolean  @default(false)
+  createdAt    DateTime @default(now())
+
+  createdBy User     @relation(fields: [createdById], references: [id])
+  location  Location @relation(fields: [locationId], references: [id])
+}
+
+model Route {
+  id               String   @id @default(uuid()) @db.Uuid
+  createdById      String   @db.Uuid
+  title            String
+  description      String?
+  startLocationId  String   @db.Uuid
+  endLocationId    String   @db.Uuid
+  distanceKm       Float?
+  estimatedTimeMin Int?
+  isPublic         Boolean  @default(true)
+  createdAt        DateTime @default(now())
+
+  createdBy     User     @relation(fields: [createdById], references: [id])
+  startLocation Location @relation("RouteStartLocation", fields: [startLocationId], references: [id])
+  endLocation   Location @relation("RouteEndLocation", fields: [endLocationId], references: [id])
+  points        RoutePoint[]
+}
+
+model RoutePoint {
+  id      String @id @default(uuid()) @db.Uuid
+  routeId String @db.Uuid
+  lat     Float
+  lng     Float
+  order   Int
+
+  route Route @relation(fields: [routeId], references: [id])
+
+  @@unique([routeId, order])
+}
+
+model Crew {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String
+  description String?
+  avatarUrl   String?
+  createdById String   @db.Uuid
+  createdAt   DateTime @default(now())
+
+  createdBy User         @relation(fields: [createdById], references: [id])
+  members   CrewMember[]
+}
+
+model CrewMember {
+  id       String   @id @default(uuid()) @db.Uuid
+  crewId   String   @db.Uuid
+  userId   String   @db.Uuid
+  role     CrewRole @default(MEMBER)
+  joinedAt DateTime @default(now())
+
+  crew Crew @relation(fields: [crewId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([crewId, userId])
+}
+
+model Car {
+  id        String   @id @default(uuid()) @db.Uuid
+  ownerId   String   @db.Uuid
+  brand     String
+  model     String
+  year      Int?
+  imageUrl  String?
+  createdAt DateTime @default(now())
+
+  owner User @relation(fields: [ownerId], references: [id])
+}
+
+model MapPoint {
+  id          String       @id @default(uuid()) @db.Uuid
+  createdById String?      @db.Uuid
+  locationId  String       @db.Uuid
+  type        MapPointType
+  title       String
+  description String?
+  isVerified  Boolean      @default(false)
+  createdAt   DateTime     @default(now())
+
+  createdBy User?     @relation(fields: [createdById], references: [id])
+  location  Location @relation(fields: [locationId], references: [id])
+}
+
+model News {
+  id            String    @id @default(uuid()) @db.Uuid
+  title         String
+  content       String
+  coverImageUrl String?
+  publishedAt   DateTime?
+  isPublished   Boolean   @default(false)
+}
+
+model HelpArticle {
+  id       String  @id @default(uuid()) @db.Uuid
+  title    String
+  content  String
+  order    Int
+  isActive Boolean @default(true)
+}
+
+enum CrewRole {
+  ADMIN
+  MEMBER
+}
+
+enum MapPointType {
+  GAS_STATION
+  WORKSHOP
+  CAR_WASH
+  MEET_POINT
+}
