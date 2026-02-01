@@ -19,6 +19,7 @@ O projeto é estruturado em um **monorepo**, contendo:
 - Separação clara de **responsabilidades**
 - Nenhuma lógica de negócio deve existir em camadas de UI
 - Arquitetura vem antes da implementação
+- Evitar comentários no código
 
 ---
 

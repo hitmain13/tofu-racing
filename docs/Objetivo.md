@@ -50,36 +50,44 @@ tofu-racing/
 > Documento único de arquitetura técnica do projeto **Tofu Racing**, consolidando decisões tomadas ao longo do projeto.
 
 ---
+Tofu Racing — Arquitetura Unificada
 
-## 1. Visão Geral
+Documento único de arquitetura técnica do projeto Tofu Racing, consolidando decisões tomadas ao longo do projeto.
 
-O **Tofu Racing** é um produto voltado a entusiastas **Gearhead**, com foco em:
+1. Visão Geral
 
-* Carros e garagem do usuário
-* Rankings de performance
-* Eventos e encontros
-* Mapa como feature central do produto
+O Tofu Racing é um produto voltado a entusiastas Gearhead, com foco em:
 
-A arquitetura foi pensada desde o início para **escala**, **performance** e **evolução contínua**, evitando retrabalho comum em MVPs descartáveis.
+Carros e garagem do usuário
 
----
+Rankings de performance
 
-## 2. Stack Global
+Eventos e encontros
 
-* **App Mobile:** React Native + Expo
-* **Web / LP:** Next.js (App Router)
-* **Backend:** Node.js + Fastify
-* **Banco de Dados:** PostgreSQL + PostGIS
-* **Cache:** Redis
-* **ORM:** Prisma
-* **Monorepo:** Turborepo
-* **Linguagem:** TypeScript (fullstack)
+Mapa como feature central do produto
 
----
+A arquitetura foi pensada desde o início para escala, performance e evolução contínua, evitando retrabalho comum em MVPs descartáveis.
 
-## 3. Arquitetura Geral
+2. Stack Global
 
-```
+App Mobile: React Native + Expo
+
+Web / LP: Next.js (App Router)
+
+Backend: Node.js + Fastify
+
+Banco de Dados: PostgreSQL + PostGIS
+
+Cache: Redis
+
+ORM: Prisma
+
+Monorepo: Turborepo
+
+Linguagem: TypeScript (fullstack)
+
+3. Arquitetura Geral
+
 [ App Mobile (React Native) ]
               │
               ├──── REST API ────┐
@@ -91,13 +99,9 @@ A arquitetura foi pensada desde o início para **escala**, **performance** e **e
                     [ PostgreSQL + PostGIS ]
                                  │
                              [ Redis ]
-```
 
----
+4. Monorepo
 
-## 4. Monorepo
-
-```
 tofu-racing/
  ├── apps/
  │   ├── mobile/        # App React Native
@@ -111,43 +115,35 @@ tofu-racing/
  │   └── config/         # ESLint, TSConfig, etc
  │
  └── turbo.json
-```
-📦 packages/ui
-packages/ui/
- ├── tokens/          # cores, spacing, radius
- ├── tailwind/        # config compartilhado
- ├── primitives/
- │   ├── Button/
- │   ├── Input/
- │   ├── Card/
- │   └── Text/
- │
- ├── web/             # wrappers shadcn/ui
- └── mobile/          # wrappers RN + NativeWind
 
----
+5. App Mobile — React Native
 
-## 5. App Mobile — React Native
+5.1 Objetivo
 
-### 5.1 Objetivo
+Produto principal
 
-* Produto principal
-* Interação social
-* Rankings, mapa, eventos e garagem
+Interação social
 
-### 5.2 Stack
+Rankings, mapa, eventos e garagem
 
-* React Native + Expo (Managed → Bare no futuro)
-* TypeScript
-* TanStack Query
-* Zustand
-* React Navigation
-* Mapbox
-* SecureStore (auth)
+5.2 Stack
 
-### 5.3 Estrutura
+React Native + Expo (Managed → Bare no futuro)
 
-```
+TypeScript
+
+TanStack Query
+
+Zustand
+
+React Navigation
+
+Mapbox
+
+SecureStore (auth)
+
+5.3 Estrutura
+
 mobile/
  └── src/
      ├── modules/
@@ -165,45 +161,49 @@ mobile/
      │   ├── services/
      │   ├── store/
      │   └── theme/
-```
 
-React Native
-+ NativeWind
-+ Tailwind config compartilhado
+5.4 Mapa (Feature Central)
 
-### 5.4 Mapa (Feature Central)
+Pontos geolocalizados:
 
-* Pontos geolocalizados:
+eventos
 
-  * eventos
-  * encontros
-  * pistas
-  * oficinas
-* Camadas ativáveis
-* Heatmap de atividade
+encontros
 
----
+pistas
 
-## 6. Web / LP — Next.js
+oficinas
 
-### 6.1 Objetivo
+Camadas ativáveis
 
-* Aquisição de usuários
-* SEO
-* Rankings e eventos públicos
-* Fortalecer marca
+Heatmap de atividade
 
-### 6.2 Stack
+6. Web / LP — Next.js
 
-* Next.js (App Router)
-* TypeScript
-* Tailwind CSS
-* Server Components
-* ISR e SSR
+6.1 Objetivo
 
-### 6.3 Estrutura
+Aquisição de usuários
 
-```
+SEO
+
+Rankings e eventos públicos
+
+Fortalecer marca
+
+6.2 Stack
+
+Next.js (App Router)
+
+TypeScript
+
+Tailwind CSS
+
+Server Components
+
+ISR e SSR
+
+6.3 Estrutura
+
 web/
  ├── app/
  │   ├── page.tsx          # Landing Page
@@ -216,32 +216,37 @@ web/
  ├── components/
  ├── lib/
  └── services/
-```
 
----
+7. Backend — Node.js
 
-## 7. Backend — Node.js
+7.1 Objetivo
 
-### 7.1 Objetivo
+API única
 
-* API única
-* Centralizar regras de negócio
-* Alta performance
+Centralizar regras de negócio
 
-### 7.2 Stack
+Alta performance
 
-* Node.js + TypeScript
-* Fastify
-* Prisma
-* PostgreSQL
-* PostGIS
-* Redis
-* Zod
-* BullMQ
+7.2 Stack
 
-### 7.3 Estrutura
+Node.js + TypeScript
 
-```
+Fastify
+
+Prisma
+
+PostgreSQL
+
+PostGIS
+
+Redis
+
+Zod
+
+BullMQ
+
+7.3 Estrutura
+
 server/
  └── src/
      ├── modules/
@@ -260,112 +265,428 @@ server/
      │   └── errors/
      │
      └── main.ts
-```
 
----
+8. Banco de Dados
 
-## 8. Banco de Dados
+8.1 Decisão Crítica
 
-### 8.1 Decisão Crítica
+Uso de PostGIS desde o início para evitar retrabalho futuro.
 
-Uso de **PostGIS desde o início** para evitar retrabalho futuro.
+8.2 Exemplo
 
-### 8.2 Exemplo
-
-```sql
 location GEOGRAPHY(Point, 4326)
-```
 
 Permite:
 
-* consultas por raio
-* ordenação por distância
-* clustering
+consultas por raio
 
----
+ordenação por distância
 
-## 9. API
+clustering
 
-* REST
-* Versionamento `/v1`
-* JWT + Refresh Token
+9. API
 
-### Exemplos
+REST
 
-```
+Versionamento /v1
+
+JWT + Refresh Token
+
+Exemplos
+
 GET    /v1/feed
 GET    /v1/map/points
 POST   /v1/events
 GET    /v1/rankings
-```
 
----
+10. Cache e Performance
 
-## 10. Cache e Performance
+Redis para:
 
-* Redis para:
+rankings
 
-  * rankings
-  * feed
-  * sessões
-* Pagination cursor-based
-* Compressão HTTP
+feed
 
----
+sessões
 
-## 11. Segurança
+Pagination cursor-based
 
-* Rate limit
-* CORS controlado
-* Validação Zod
-* Tokens seguros
+Compressão HTTP
 
----
+11. Segurança
 
-## 12. Diretrizes do Projeto
+Rate limit
 
-* Feature-based architecture
-* Nada de MVP descartável
-* Mapa é core, não acessório
-* Código preparado para escala
-* Branding tech + racing + underground
+CORS controlado
 
----
+Validação Zod
 
-## 13. Próximos Passos Naturais
+Tokens seguros
 
-* Modelagem completa do banco (ERD)
-* Definição fechada do MVP
-* Fluxo detalhado do mapa
-* Arquitetura de rankings
-* Roadmap técnico 30/60/90 dias
+12. Diretrizes do Projeto
 
----
+Feature-based architecture
 
-🏁 **Este documento é a base técnica oficial do Tofu Racing.**
+Nada de MVP descartável
 
+Mapa é core, não acessório
 
-## Qualidade
-- ESLint + Prettier configurados
-- Env vars documentadas
-- Scripts npm/yarn/pnpm bem definidos
-- README inicial explicando:
-  - Arquitetura
-  - Como rodar cada app
-  - Como funciona o realtime
+Código preparado para escala
 
-## Importante
-- NÃO implemente features completas
-- Foque em:
-  - Estrutura
-  - Boilerplate
-  - Conexões iniciais
-  - Padrões de código
-- Código limpo, comentado e escalável
+Branding tech + racing + underground
 
-No final, gere:
-- Estrutura de pastas
-- Principais arquivos iniciais
-- Exemplos de endpoints
-- Exemplo de evento WebSocket
-- README.md inicial
+13. Próximos Passos Naturais
+
+Modelagem completa do banco (ERD)
+
+Definição fechada do MVP
+
+Fluxo detalhado do mapa
+
+Arquitetura de rankings
+
+Roadmap técnico 30/60/90 dias
+
+14. Configurações Iniciais do Projeto (2026)
+
+Este capítulo define o baseline técnico do monorepo Tofu Racing, focando em DX moderna, consistência e baixo atrito entre Web, Mobile e Backend.
+
+14.1 Gerenciador de Pacotes
+
+pnpm (obrigatório)
+
+Mais rápido
+
+Workspace nativo
+
+Menos bugs em monorepo
+
+pnpm install
+
+14.2 .gitignore (Monorepo)
+
+# dependencies
+node_modules
+.pnpm-store
+
+# builds
+dist
+build
+.next
+expo-build
+
+# env
+.env
+.env.*
+
+# logs
+npm-debug.log*
+pnpm-debug.log*
+
+# OS
+.DS_Store
+
+# tooling
+.turbo
+coverage
+.sentryclirc
+
+14.3 Lint, Format e Check (🔥 Biome)
+
+Decisão
+
+Usar Biome como ferramenta única:
+
+Lint
+
+Format
+
+Import sorting
+
+👉 Substitui ESLint + Prettier com mais performance e menos config.
+
+biome.json
+
+{
+  "$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
+  "organizeImports": { "enabled": true },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true
+    }
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "single"
+    }
+  }
+}
+
+Scripts
+
+{
+  "scripts": {
+    "lint": "biome lint .",
+    "format": "biome format . --write",
+    "check": "biome check . --apply"
+  }
+}
+
+14.4 TypeScript (Strict)
+
+tsconfig.base.json
+
+{
+  "compilerOptions": {
+    "strict": true,
+    "noImplicitAny": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
+  }
+}
+
+➡️ Todos os apps estendem esse config.
+
+14.5 Testes
+
+Unit / Integration
+
+Vitest (web + server)
+
+pnpm add -D vitest @vitest/coverage-v8
+
+Exemplo:
+
+import { describe, it, expect } from 'vitest'
+
+describe('healthcheck', () => {
+  it('should be true', () => {
+    expect(true).toBe(true)
+  })
+})
+
+App Mobile
+
+Jest + React Native Testing Library
+
+Foco em:
+
+hooks
+
+services
+
+lógica de negócio
+
+14.6 Commit e Qualidade
+
+Commitlint
+
+feat: nova feature
+fix: correção
+chore: manutenção
+refactor: refatoração
+
+Husky
+
+pnpm add -D husky
+pnpm husky install
+
+Hook recomendado:
+
+pnpm lint && pnpm test
+
+14.7 CI (GitHub Actions)
+
+Pipeline mínimo:
+
+install
+
+lint
+
+test
+
+build
+
+14.8 Diretrizes Importantes
+
+❌ Prettier não é usado (Biome substitui)
+
+❌ ESLint não é usado
+
+✅ Biome é fonte única de verdade
+
+✅ TS strict sempre
+
+✅ Teste não é opcional
+
+15. Estratégia de Environments (dev / stage / prod)
+
+O projeto utiliza três ambientes bem definidos, evitando acoplamento e bugs de configuração.
+
+15.1 Ambientes
+
+Ambiente
+
+Uso
+
+Branch
+
+dev
+
+Desenvolvimento local
+
+feature/*
+
+stage
+
+QA / preview
+
+develop
+
+prod
+
+Produção
+
+main
+
+15.2 Arquivos de Ambiente
+
+.env.example        # template (commitado)
+.env.local          # dev (não commitado)
+.env.stage          # stage
+.env.production     # prod
+
+Nunca commitar .env real.
+
+15.3 Variáveis Base (exemplo)
+
+NODE_ENV=
+DATABASE_URL=
+REDIS_URL=
+API_URL=
+MAPBOX_TOKEN=
+JWT_SECRET=
+
+15.4 App Mobile (Expo)
+
+Usa app.config.ts
+
+Variáveis expostas via extra
+
+export default {
+  extra: {
+    apiUrl: process.env.API_URL,
+  },
+}
+
+16. Configuração Compartilhada (packages/config)
+
+Centraliza configs reutilizáveis para evitar drift entre apps.
+
+packages/config/
+ ├── biome/
+ │   └── biome.json
+ ├── tsconfig/
+ │   └── tsconfig.base.json
+ ├── tailwind/
+ │   └── tailwind.config.ts
+ └── env/
+     └── env.schema.ts
+
+16.1 Validação de ENV (Zod)
+
+import { z } from 'zod'
+
+export const envSchema = z.object({
+  DATABASE_URL: z.string().url(),
+  JWT_SECRET: z.string().min(32),
+})
+
+Falha rápida se variável estiver incorreta.
+
+17. Quality Gate Mínimo
+
+O código não passa se não atender aos critérios abaixo.
+
+17.1 Gates Obrigatórios
+
+pnpm lint → sem erros
+
+pnpm test → status green
+
+Coverage mínimo:
+
+backend: 80%
+
+web: 70%
+
+Build sem warnings críticos
+
+17.2 Regra de Pull Request
+
+PR sem CI verde não pode ser mergeado
+
+Pelo menos 1 aprovação
+
+18. Pipeline GitHub Actions
+
+Pipeline único para monorepo.
+
+18.1 Estrutura
+
+.github/workflows/ci.yml
+
+18.2 Exemplo de Pipeline
+
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main, develop]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - run: pnpm install
+      - run: pnpm lint
+      - run: pnpm test
+      - run: pnpm build
+
+19. Ready to Develop
+
+Com esta base:
+
+Ambiente previsível
+
+DX moderna
+
+Qualidade automatizada
+
+Escala sem retrabalho
+
+O time pode começar a desenvolver sem decisões pendentes de infra.
+
+🏁 Este documento é a base técnica oficial do Tofu Racing.
+

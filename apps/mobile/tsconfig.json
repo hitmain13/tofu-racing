@@ -1,0 +1,17 @@
+{
+  "extends": "../../packages/config/tsconfig/tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "react-native",
+    "moduleResolution": "node",
+    "target": "esnext",
+    "module": "esnext",
+    "types": [
+      "react",
+      "react-native"
+    ]
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx"
+  ]
+}
